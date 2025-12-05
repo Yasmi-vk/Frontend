@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>After School Lessons</title>
+    
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+    <header>
+        <h1>{{ sitename }}</h1>
+        <button @click="toggleCart" :disabled="cart.length === 0">
+            {{ cartItemCount }}
+            Cart
+        </button>
+    </header>
+
+    <main>
+        <!-- LESSONS PAGE -->
+        <div v-if="currentPage === 'lessons'">
+            <h2>Available Lessons</h2>
+
+            <div class="controls-bar">
+                <div class="sort-controls">
+                    <label for="sortAttribute">Sort by:</label>
+                    <select v-model="sortAttribute" id="sortAttribute">
+                        <option value="subject">Subject</option>
+                        <option value="location">Location</option>
+                        <option value="price">Price</option>
+                        <option value="spaces">Spaces</option>
+                        <option value="rating">Rating</option>
+                    </select>
+
+                    <button @click="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        {{ sortOrder === 'asc' ? 'Ascending' : 'Descending' }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="lessons-grid">
+                <div v-for="lesson in sortedLessons" :key="lesson.id" class="lesson-box">
+                    <div class="lesson-image">
+                        <img :src="lesson.image" :alt="lesson.subject + ' lesson image'">
+                    </div>
+
+                    <div class="lesson-content">
+                        <h3>{{ lesson.subject }}</h3>
+                        <p><strong>Location:</strong> {{ lesson.location }}</p>
+                        <p><strong>Price:</strong> ${{ lesson.price }}</p>
+                        <p><strong>Spaces left:</strong> {{ lesson.spaces - cartCount(lesson.id) }}</p>
+
+                        <p class="rating">
+                            <strong>Rating:</strong>
+                            <span class="stars">{{ getStars(lesson.rating) }}</span>
+                            ({{ lesson.rating.toFixed(1) }}/5)
+                        </p>
+
+                        <button
+                            class="btn-primary"
+                            @click="addToCart(lesson)"
+                            :disabled="!canAddToCart(lesson)">
+                            Add to Cart
+                        </button>
+
+                        <p class="stock-message" v-if="lesson.spaces === cartCount(lesson.id)">
+                            <span class="tag sold-out">All out!</span>
+                        </p>
+                        <p class="stock-message" v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
+                            <span class="tag warning">
+                                Only {{ lesson.spaces - cartCount(lesson.id) }} left!
+                            </span>
+                        </p>
+                        <p class="stock-message" v-else>
+                            <span class="tag success">Buy now!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CART PAGE -->
+        <div v-if="currentPage === 'cart'">
+            <h2>Your Cart</h2>
+
+            <div v-if="cart.length === 0">
+                <p>Your cart is empty.</p>
+                <button class="btn-secondary" @click="backToLessons">Back to Lessons</button>
+            </div>
+
+            <div v-else>
+                <div v-for="(lesson, index) in cart" :key="index" class="cart-item">
+                    <div class="cart-item-thumb">
+                        <img :src="lesson.image" :alt="lesson.subject + ' image'">
+                    </div>
+
+                    <div class="cart-item-info">
+                        <h3>{{ lesson.subject }}</h3>
+                        <p>Location: {{ lesson.location }}</p>
+                        <p>Price: ${{ lesson.price }}</p>
+                        <p>Rating: {{ lesson.rating.toFixed(1) }}/5</p>
+                    </div>
+                    <button class="btn-danger" @click="removeFromCart(index)">Remove</button>
+                </div>
+
+                <h3 class="cart-total">Total: ${{ totalPrice }}</h3>
+
+                <div class="cart-actions">
+                    <button class="btn-primary" @click="goToCheckout" :disabled="cart.length === 0">
+                        Checkout
+                    </button>
+                    <button class="btn-secondary" @click="backToLessons">
+                        Back to Lessons
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKOUT PAGE -->
+        <div v-if="currentPage === 'checkout'">
+            <h2>Checkout</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><strong>First Name:</strong></label>
+                    <input v-model="order.firstName" type="text" />
+                </div>
+                <div class="form-group">
+                    <label><strong>Last Name:</strong></label>
+                    <input v-model="order.lastName" type="text" />
+                </div>
+                <div class="form-group">
+                    <label><strong>Address:</strong></label>
+                    <input v-model="order.address" type="text" />
+                </div>
+                <div class="form-group">
+                    <label><strong>City:</strong></label>
+                    <input v-model="order.city" type="text" />
+                </div>
+                <div class="form-group">
+                    <label><strong>Phone:</strong></label>
+                    <input v-model="order.phone" type="text" placeholder="Numbers only" />
+                </div>
+            </div>
+
+            <h2>Items in your cart</h2>
+
+            <div v-if="cart.length === 0">
+                <p>No items in cart.</p>
+            </div>
+
+            <div v-else>
+                <div v-for="(lesson, index) in cart" :key="index" class="cart-item">
+                    <div class="cart-item-thumb">
+                        <img :src="lesson.image" :alt="lesson.subject + ' image'">
+                    </div>
+
+                    <div class="cart-item-info">
+                        <h3>{{ lesson.subject }}</h3>
+                        <p>Location: {{ lesson.location }}</p>
+                        <p>Price: ${{ lesson.price }}</p>
+                        <p>Rating: {{ lesson.rating.toFixed(1) }}/5</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Order Information</h2>
+            <div class="order-summary">
+                <p>First Name: {{ order.firstName }}</p>
+                <p>Last Name: {{ order.lastName }}</p>
+                <p>Address: {{ order.address }}</p>
+                <p>City: {{ order.city }}</p>
+                <p>Phone: {{ order.phone }}</p>
+                <p><strong>Total:</strong> ${{ totalPrice }}</p>
+            </div>
+
+            <div class="cart-actions">
+                <button class="btn-primary"
+                        @click="submitForm"
+                        :disabled="!isFormValid">
+                    Place Order
+                </button>
+                <button class="btn-secondary" @click="backToCart">
+                    Back to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- CONFIRMATION PAGE -->
+        <div v-if="currentPage === 'confirmation'">
+            <h2>Thank you! Your Order has been placed.</h2>
+
+            <div class="order-summary">
+                <h3>Customer Information</h3>
+                <p><strong>Name:</strong> {{ order.firstName }} {{ order.lastName }}</p>
+                <p><strong>Phone:</strong> {{ order.phone }}</p>
+                <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}</p>
+
+                <h3>Lessons:</h3>
+                <ul>
+                    <li v-for="(lesson, index) in cart" :key="index">
+                        {{ lesson.subject }} - ${{ lesson.price }} ({{ lesson.rating.toFixed(1) }}/5)
+                    </li>
+                </ul>
+            </div>
+
+            <button class="btn-primary" @click="backToLessons">
+                Book More Lessons
+            </button>
+        </div>
+    </main>
+</div>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    sitename: 'After School Lessons',
+    currentPage: 'lessons',
+    sortAttribute: 'subject',
+    sortOrder: 'asc',
+    lessons: [],          // filled from MongoDB
+    cart: [],
+    order: {
+      firstName: '',
+      lastName: '',
+      address: '',
+      city: '',
+      phone: ''
+    }
+  },
+  created() {
+    this.fetchLessons();
+  },
+  methods: {
+    // GET /collection/lessons
+    fetchLessons() {
+      fetch('http://localhost:3000/collection/lessons')
+        .then(res => res.json())
+        .then(data => {
+          console.log('Lessons from DB:', data);
+
+          // Normalize all lessons from DB to match frontend expectations
+          this.lessons = data.map(l => {
+            const img = l.image || '';
+            const imagePath = img.startsWith('http')
+              ? img
+              : (img.includes('images/')
+                  ? img
+                  : 'images/' + img);
+
+            return {
+              id: l.id,
+              subject: l.subject,
+              location: l.location,
+              price: Number(l.price ?? 0),
+              spaces: Number(l.spaces ?? l.availableInventory ?? 5),
+              rating: Number(l.rating ?? 5),
+              image: imagePath
+            };
+          });
+        })
+        .catch(err => {
+          console.error('Error loading lessons:', err);
+          alert('Could not load lessons from server');
+        });
+    },
+
+    toggleCart() {
+      // If cart is empty → do nothing (button is already disabled)
+      if (this.cart.length === 0) return;
+
+      // If currently NOT on cart → go to cart
+      if (this.currentPage !== 'cart') {
+        this.currentPage = 'cart';
+      } 
+      // If already on cart → go back to lessons
+      else {
+        this.currentPage = 'lessons';
+      }
+    },
+    backToLessons() {
+      this.currentPage = 'lessons';
+    },
+    goToCheckout() {
+      this.currentPage = 'checkout';
+    },
+    backToCart() {
+      this.currentPage = 'cart';
+    },
+    addToCart(lesson) {
+      if (this.canAddToCart(lesson)) {
+        this.cart.push(lesson);
+      }
+    },
+    removeFromCart(index) {
+      this.cart.splice(index, 1);
+    },
+    canAddToCart(lesson) {
+      return lesson.spaces > this.cartCount(lesson.id);
+    },
+    cartCount(id) {
+      return this.cart.filter(item => item.id === id).length;
+    },
+
+    // POST order to backend: /collection/orders
+    sendOrderToBackend() {
+      const lessonsForOrder = this.cartDetails.map(item => ({
+        id: item.id,
+        qty: item.qty
+      }));
+
+      const payload = {
+        name: `${this.order.firstName} ${this.order.lastName}`,
+        phone: this.order.phone,
+        lessons: lessonsForOrder
+      };
+
+      return fetch('http://localhost:3000/collection/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Order saved:', data);
+          return data;
+        })
+        .catch(err => {
+          console.error('Error saving order:', err);
+        });
+    },
+
+    // PUT: update spaces in backend after order
+    updateSpacesAfterOrder() {
+      this.cartDetails.forEach(item => {
+        const lesson = this.lessons.find(a => a.id === item.id);
+        if (!lesson) return;
+
+        const newSpaces = lesson.spaces - item.qty;
+        const lessonId = lesson.id; // numeric id – backend supports this
+
+        fetch(`http://localhost:3000/collection/lessons/${lessonId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ spaces: newSpaces })
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log('Updated spaces:', data);
+            lesson.spaces = newSpaces;
+          })
+          .catch(err => console.error('Error updating spaces:', err));
+      });
+    },
+
+    // Called when user clicks "Place Order"
+    submitForm() {
+      if (!this.isFormValid) return;
+
+      this.sendOrderToBackend();
+      this.updateSpacesAfterOrder();
+      this.currentPage = 'confirmation';
+    },
+
+    getStars(rating) {
+      const fullStars = Math.round(rating); // 0–5
+      return '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+    }
+  },
+  computed: {
+    cartItemCount() {
+      return this.cart.length || "";
+    },
+    totalPrice() {
+      return this.cart.reduce((sum, item) => sum + item.price, 0);
+    },
+    isFormValid() {
+      const phoneValid = /^[0-9]+$/.test(this.order.phone);
+      return (
+        this.order.firstName.trim() !== "" &&
+        this.order.lastName.trim() !== "" &&
+        this.order.address.trim() !== "" &&
+        this.order.city.trim() !== "" &&
+        phoneValid &&
+        this.cart.length > 0
+      );
+    },
+    sortedLessons() {
+      return this.lessons.slice().sort((a, b) => {
+        let modifier = this.sortOrder === 'asc' ? 1 : -1;
+        if (a[this.sortAttribute] < b[this.sortAttribute]) return -1 * modifier;
+        if (a[this.sortAttribute] > b[this.sortAttribute]) return 1 * modifier;
+        return 0;
+      });
+    },
+    // Groups cart into [{ id, qty }]
+    cartDetails() {
+      const map = {};
+      this.cart.forEach(item => {
+        if (!map[item.id]) {
+          map[item.id] = { id: item.id, qty: 0 };
+        }
+        map[item.id].qty += 1;
+      });
+      return Object.values(map);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
