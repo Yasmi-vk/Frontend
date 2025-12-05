@@ -1,0 +1,329 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  color: #3c2d57;
+  background: #f7f2ff; /* fallback */
+}
+
+/* Whole app background */
+#app {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25)),
+    url("images/background.jpg") center center fixed;
+  background-size: cover;
+  padding-bottom: 40px;
+}
+
+/* -----------------------------------
+   HEADER
+----------------------------------- */
+header {
+  background: #b39ddb; /* pastel lavender */
+  color: #fff;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+header button {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  background: #eae2ff; /* soft muted purple */
+  color: #6f3dc4;
+  font-weight: 600;
+}
+
+header button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* -----------------------------------
+   LAYOUT
+----------------------------------- */
+main {
+  padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-top: 0;
+  color: #4b2f7f;
+}
+
+/* -----------------------------------
+   SORT CONTROLS
+----------------------------------- */
+.controls-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sort-controls label {
+  margin-right: 6px;
+}
+
+.sort-controls select {
+  padding: 4px 6px;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid #d6bbff;
+  background: #f9f5ff;
+  color: #3c2d57;
+}
+
+.sort-controls button {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #9575cd; /* muted purple */
+  color: #fff;
+}
+
+.sort-controls button:hover {
+  background: #7e57c2;
+}
+
+/* -----------------------------------
+   LESSON GRID
+----------------------------------- */
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* Lesson Card */
+.lesson-box {
+  background: #faf7ff; /* soft pastel purple */
+  border-radius: 14px;
+  padding: 10px 10px 12px 10px;
+  box-shadow: 0 2px 10px rgba(70, 50, 110, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #d7c9f5;
+}
+
+/* Image container */
+.lesson-image {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: #f3e8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lesson-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Text */
+.lesson-content h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 18px;
+  color: #3c2d57;
+}
+
+.lesson-content p {
+  margin: 3px 0;
+  color: #6f5d8a;
+}
+
+/* Rating */
+.rating {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.stars {
+  color: #ffca28; /* warm gold */
+  margin-right: 4px;
+}
+
+/* -----------------------------------
+   STOCK TAGS
+----------------------------------- */
+.stock-message {
+  margin-top: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.tag.sold-out {
+  background: #ffe4ef;
+  color: #b23367;
+}
+
+.tag.warning {
+  background: #fff5d1;
+  color: #9c6b00;
+}
+
+.tag.success {
+  background: #e3f8e0;
+  color: #3b7a30;
+}
+
+/* -----------------------------------
+   BUTTONS
+----------------------------------- */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: #9575cd; /* muted purple */
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #7e57c2;
+}
+
+.btn-secondary {
+  background: #eae2ff;
+  color: #3c2d57;
+}
+
+.btn-danger {
+  background: #e57373;
+  color: #fff;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* -----------------------------------
+   CART
+----------------------------------- */
+.cart-item {
+  background: #faf7ff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(70, 50, 110, 0.08);
+  border: 1px solid #d7c9f5;
+}
+
+.cart-item-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f3e8ff;
+}
+
+.cart-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info h3 {
+  margin: 0 0 4px 0;
+  color: #3c2d57;
+}
+
+.cart-total {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #4b2f7f;
+}
+
+.cart-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+}
+
+/* -----------------------------------
+   FORMS
+----------------------------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #4b2f7f;
+}
+
+.form-group input {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #d6bbff;
+  background: #fdfbff;
+  color: #3c2d57;
+}
+
+/* -----------------------------------
+   ORDER SUMMARY
+----------------------------------- */
+.order-summary {
+  background: #faf7ff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(70, 50, 110, 0.08);
+  margin-bottom: 16px;
+  border: 1px solid #d7c9f5;
+}
+
+.order-summary h3 {
+  margin-top: 0;
+  color: #4b2f7f;
+}
+
+.order-summary ul {
+  padding-left: 20px;
+}
