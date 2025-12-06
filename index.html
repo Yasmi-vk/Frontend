@@ -323,10 +323,17 @@ new Vue({
 
     // POST order to backend: /collection/orders
     sendOrderToBackend() {
-      const lessonsForOrder = this.cartDetails.map(item => ({
-        id: item.id,
-        qty: item.qty
-      }));
+      const lessonsForOrder = this.cartDetails.map(item => {
+        const lesson = this.lesson.find(l => l.id === item.id);
+
+        return{
+          id: item.id,
+          subject: lesson ? lesson.subject : 'Unknown',
+          qty: item.qty,
+          price: lesson ? lesson.price : 0
+        };
+       
+      });
 
       const payload = {
         name: `${this.order.firstName} ${this.order.lastName}`,
