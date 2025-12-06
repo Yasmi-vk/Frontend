@@ -40,6 +40,15 @@
                         {{ sortOrder === 'asc' ? 'Ascending' : 'Descending' }}
                     </button>
                 </div>
+
+                <div class="search-bar">
+                  <input 
+                  type="text"
+                  v-model="searchTerm"
+                  @input="fetchLessons"
+                  placeholder="Search by subject or location..."
+                  >
+                </div>
             </div>
 
             <div class="lessons-grid">
