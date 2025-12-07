@@ -434,26 +434,28 @@ new Vue({
       if (!this.order.phone.trim()) return '';
 
       const ok = /^[0-9]{7,15}$/.test(this.order.phone);
-      return ok ? '' : 'Please enter a valid phone number.';
+      return ok ? null : 'Please enter a valid phone number.';
     },
     emailError() {
       if(!this.order.email.trim()) return '';
 
       const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email);
-      return ok ? '' : 'Please enter a valid email address.';
+      return ok ? null : 'Please enter a valid email address.';
     },
     isFormValid() {
-      const phoneOK = this.phoneError === '';
-      const emailOK = this.emailError === '';
-      return (
+      const requiredFilled =
         this.order.firstName.trim() !== "" &&
         this.order.lastName.trim() !== "" &&
         this.order.address.trim() !== "" &&
         this.order.city.trim() !== "" &&
-        phoneValid &&
-        emailValid &&
-        this.cart.length > 0
-      );
+        this.order.phone.trim() !== "" &&
+        this.order.email.trim() !== "";
+
+      const noErrors =
+      this.phoneError === null &&
+      this.emailError === null;
+
+      return requiredFilled && noErrors && this.cart.length > 0;
     },
     sortedLessons() {
       return this.lessons.slice().sort((a, b) => {
