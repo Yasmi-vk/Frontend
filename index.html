@@ -71,7 +71,7 @@
                     <div class="lesson-content">
                         <h3>{{ lesson.subject }}</h3>
                         <p><strong>Location:</strong> {{ lesson.location }}</p>
-                        <p><strong>Price:</strong> ${{ lesson.price }}</p>
+                        <p><strong>Price:</strong> AED {{ lesson.price }}</p>
                         <p><strong>Spaces left:</strong> {{ lesson.spaces - cartCount(lesson.id) }}</p>
 
                         <p class="rating">
@@ -121,7 +121,7 @@
                     <div class="cart-item-info">
                         <h3>{{ lesson.subject }}</h3>
                         <p>Location: {{ lesson.location }}</p>
-                        <p>Price: ${{ lesson.price }}</p>
+                        <p>Price: AED {{ lesson.price }}</p>
                         <p>Rating: {{ lesson.rating.toFixed(1) }}/5</p>
                     </div>
                     <button class="btn-danger" @click="removeFromCart(index)">Remove</button>
@@ -182,7 +182,7 @@
                     <div class="cart-item-info">
                         <h3>{{ lesson.subject }}</h3>
                         <p>Location: {{ lesson.location }}</p>
-                        <p>Price: ${{ lesson.price }}</p>
+                        <p>Price: AED {{ lesson.price }}</p>
                         <p>Rating: {{ lesson.rating.toFixed(1) }}/5</p>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                 <p>Address: {{ order.address }}</p>
                 <p>City: {{ order.city }}</p>
                 <p>Phone: {{ order.phone }}</p>
-                <p><strong>Total:</strong> ${{ totalPrice }}</p>
+                <p><strong>Total:</strong> AED {{ totalPrice }}</p>
             </div>
 
             <div class="cart-actions">
@@ -223,7 +223,7 @@
                 <h3>Lessons:</h3>
                 <ul>
                     <li v-for="(lesson, index) in cart" :key="index">
-                        {{ lesson.subject }} - ${{ lesson.price }} ({{ lesson.rating.toFixed(1) }}/5)
+                        {{ lesson.subject }} - AED {{ lesson.price }} ({{ lesson.rating.toFixed(1) }}/5)
                     </li>
                 </ul>
             </div>
