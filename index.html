@@ -51,13 +51,14 @@
                     </button>
                 </div>
 
-                <div class="search-bar">
+                <div class="search-box">
                   <input 
                   type="text"
                   v-model="searchTerm"
-                  @input="fetchLessons"
+                  @keyup.enter="fetchLessons"
                   placeholder="Search by subject or location..."
                   >
+                  <button class="btn-primary btn-search" @click="fetchLessons">Search</button>
                 </div>
             </div>
 
