@@ -381,3 +381,9 @@ h2 {
 .order-summary ul {
   padding-left: 20px;
 }
+
+.error-message {
+  color: #b23367;
+  font-size: 12px;
+  margin-top: 3px;
+}

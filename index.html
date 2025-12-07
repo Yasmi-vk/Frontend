@@ -29,7 +29,7 @@
                 <div class="sort-controls">
                   <p class="sort-title">Sort by:</p>
 
-                  <div class="sort=options">
+                  <div class="sort-options">
                     <label><input type="radio" value="subject" v-model="sortAttribute"> Subject</label>
                     <label><input type="radio" value="location" v-model="sortAttribute"> Location</label>
                     <label><input type="radio" value="price" v-model="sortAttribute"> Price</label>
@@ -164,10 +164,12 @@
                 <div class="form-group">
                     <label><strong>Phone:</strong></label>
                     <input v-model="order.phone" type="text" placeholder="Numbers only" />
+                    <small class="error-message" v-if="phoneError">{{ phoneError }}</small>
                 </div>
                 <div class="form-group">
                   <label><strong>Email:</strong></label>
                   <input v-model="order.email" type="email" placeholder="example@gmail.com" />
+                  <small class="error-message" v-if="emailError">{{ emailError }}</small>
                 </div>
             </div>
 
@@ -419,10 +421,21 @@ new Vue({
     totalPrice() {
       return this.cart.reduce((sum, item) => sum + item.price, 0);
     },
-    isFormValid() {
-      const phoneValid = /^[0-9]+$/.test(this.order.phone);
+    phoneError() {
+      if (!this.order.phone.trim()) return '';
 
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email);
+      const ok = /^[0-9]{7,15}$/.test(this.order.phone);
+      return ok ? '' : 'Please enter a valid phone number.';
+    },
+    emailError() {
+      if(!this.order.email.trim()) return '';
+
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email);
+      return ok ? '' : 'Please enter a valid email address.';
+    },
+    isFormValid() {
+      const phoneOK = this.phoneError === '';
+      const emailOK = this.emailError === '';
       return (
         this.order.firstName.trim() !== "" &&
         this.order.lastName.trim() !== "" &&
