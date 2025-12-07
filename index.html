@@ -335,7 +335,7 @@ new Vue({
     // POST order to backend: /collection/orders
     sendOrderToBackend() {
       const lessonsForOrder = this.cartDetails.map(item => {
-        const lesson = this.lesson.find(l => l.id === item.id);
+        const lesson = this.lessons.find(l => l.id === item.id);
 
         return{
           id: item.id,
@@ -352,7 +352,7 @@ new Vue({
         lessons: lessonsForOrder
       };
 
-      return fetch('http://localhost:3000/collection/orders', {
+      return fetch(API + '/collection/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -376,7 +376,7 @@ new Vue({
         const newSpaces = lesson.spaces - item.qty;
         const lessonId = lesson.id; // numeric id – backend supports this
 
-        fetch(`http://localhost:3000/collection/lessons/${lessonId}`, {
+        fetch(`${API}/collection/lessons/${lessonId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ spaces: newSpaces })
