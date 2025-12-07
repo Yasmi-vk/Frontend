@@ -165,6 +165,10 @@
                     <label><strong>Phone:</strong></label>
                     <input v-model="order.phone" type="text" placeholder="Numbers only" />
                 </div>
+                <div class="form-group">
+                  <label><strong>Email:</strong></label>
+                  <input v-model="order.email" type="email" placeholder="example@gmail.com" />
+                </div>
             </div>
 
             <h2>Items in your cart</h2>
@@ -195,6 +199,7 @@
                 <p>Address: {{ order.address }}</p>
                 <p>City: {{ order.city }}</p>
                 <p>Phone: {{ order.phone }}</p>
+                <p>Email: {{ order.email }}</p>
                 <p><strong>Total:</strong> AED {{ totalPrice }}</p>
             </div>
 
@@ -218,6 +223,7 @@
                 <h3>Customer Information</h3>
                 <p><strong>Name:</strong> {{ order.firstName }} {{ order.lastName }}</p>
                 <p><strong>Phone:</strong> {{ order.phone }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
                 <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}</p>
 
                 <h3>Lessons:</h3>
@@ -254,7 +260,8 @@ new Vue({
       lastName: '',
       address: '',
       city: '',
-      phone: ''
+      phone: '',
+      email: ''
     }
   },
   created() {
@@ -349,6 +356,7 @@ new Vue({
       const payload = {
         name: `${this.order.firstName} ${this.order.lastName}`,
         phone: this.order.phone,
+        email: this.oeder.email,
         lessons: lessonsForOrder
       };
 
@@ -413,12 +421,15 @@ new Vue({
     },
     isFormValid() {
       const phoneValid = /^[0-9]+$/.test(this.order.phone);
+
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email);
       return (
         this.order.firstName.trim() !== "" &&
         this.order.lastName.trim() !== "" &&
         this.order.address.trim() !== "" &&
         this.order.city.trim() !== "" &&
         phoneValid &&
+        emailValid &&
         this.cart.length > 0
       );
     },
