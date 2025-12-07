@@ -164,10 +164,20 @@ h2 {
   border: 1px solid #d7c9f5;
 }
 
+.lessons-grid {
+  justify-content: center;
+}
+
+.lessons-gird .lesson-box {
+  max-width: 360px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 /* Image container */
 .lesson-image {
   width: 100%;
-  height: 140px;
+  aspect-ratio: 16/9;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 8px;
