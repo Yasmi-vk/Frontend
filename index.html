@@ -127,7 +127,7 @@
                     <button class="btn-danger" @click="removeFromCart(index)">Remove</button>
                 </div>
 
-                <h3 class="cart-total">Total: ${{ totalPrice }}</h3>
+                <h3 class="cart-total">Total: AED {{ totalPrice }}</h3>
 
                 <div class="cart-actions">
                     <button class="btn-primary" @click="goToCheckout" :disabled="cart.length === 0">
