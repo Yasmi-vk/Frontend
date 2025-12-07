@@ -27,16 +27,26 @@
 
             <div class="controls-bar">
                 <div class="sort-controls">
-                    <label for="sortAttribute">Sort by:</label>
+                  <p class="sort-title">Sort by:</p>
+
+                  <div class="sort=options">
+                    <label><input type="radio" value="subject" v-model="sortAttribute"> Subject</label>
+                    <label><input type="radio" value="location" v-model="sortAttribute"> Location</label>
+                    <label><input type="radio" value="price" v-model="sortAttribute"> Price</label>
+                    <label><input type="radio" value="spaces" v-model="sortAttribute"> Spaces</label>
+                    <label><input type="radio" value="rating" v-model="sortAttribute"> Rating</label>
+                  </div>
+                    <!-- <label for="sortAttribute">Sort by:</label>
                     <select v-model="sortAttribute" id="sortAttribute">
                         <option value="subject">Subject</option>
                         <option value="location">Location</option>
                         <option value="price">Price</option>
                         <option value="spaces">Spaces</option>
                         <option value="rating">Rating</option>
-                    </select>
+                    </select> -->
 
-                    <button @click="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    <button class="btn-small"
+                      @click="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         {{ sortOrder === 'asc' ? 'Ascending' : 'Descending' }}
                     </button>
                 </div>
