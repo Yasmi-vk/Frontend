@@ -237,7 +237,7 @@
             </div>
 
             <button class="btn-primary" @click="backToLessons">
-                Book More Lessons
+                Okay
             </button>
         </div>
     </main>
@@ -319,6 +319,15 @@ new Vue({
     },
     backToLessons() {
       this.currentPage = 'lessons';
+      this.cart = [];
+      this.order = {
+        firstName: '',
+        lastName: '',
+        address: '',
+        city: '',
+        phone: '',
+        email: ''
+      };
     },
     goToCheckout() {
       this.currentPage = 'checkout';
