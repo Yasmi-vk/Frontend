@@ -271,38 +271,74 @@ new Vue({
   },
   methods: {
     // GET /collection/lessons
-    fetchLessons() {
-      const query = this.searchTerm
-      ? '?search=' + encodeURIComponent(this.searchTerm)
-      : '';
+    // fetchLessons() {
+    //   const query = this.searchTerm
+    //   ? '?search=' + encodeURIComponent(this.searchTerm)
+    //   : '';
 
-      fetch(API + '/collection/lessons' + query)
-        .then(res => res.json())
-        .then(data => {
-          console.log('Lessons from DB:', data);
+    //   fetch(API + '/collection/lessons' + query)
+    //     .then(res => res.json())
+    //     .then(data => {
+    //       console.log('Lessons from DB:', data);
 
-          // Normalize all lessons from DB to match frontend expectations
-          this.lessons = data.map(l => {
-            const img = l.image || '';
-            const filename = img.replace(/^images[\\/]/,'');
-            const imagePath = `${API}/images/${filename}`;
+    //       // Normalize all lessons from DB to match frontend expectations
+    //       this.lessons = data.map(l => {
+    //         const img = l.image || '';
+    //         const filename = img.replace(/^images[\\/]/,'');
+    //         const imagePath = `${API}/images/${filename}`;
           
-            return {
-              id: l.id,
-              subject: l.subject,
-              location: l.location,
-              price: Number(l.price ?? 0),
-              spaces: Number(l.spaces ?? l.availableInventory ?? 5),
-              rating: Number(l.rating ?? 5),
-              image: imagePath
-            };
-          });
-        })
-        .catch(err => {
-          console.error('Error loading lessons:', err);
-          alert('Could not load lessons from server');
-        });
-    },
+    //         return {
+    //           id: l.id,
+    //           subject: l.subject,
+    //           location: l.location,
+    //           price: Number(l.price ?? 0),
+    //           spaces: Number(l.spaces ?? l.availableInventory ?? 5),
+    //           rating: Number(l.rating ?? 5),
+    //           image: imagePath
+    //         };
+    //       });
+    //     })
+    //     .catch(err => {
+    //       console.error('Error loading lessons:', err);
+    //       alert('Could not load lessons from server');
+    //     });
+    // },
+
+    fetchLessons() {
+  const trimmed = this.searchTerm.trim();
+
+  // If search box has text → use /search
+  // If empty → use /lessons
+  const url = trimmed
+    ? `${API}/search?q=${encodeURIComponent(trimmed)}`
+    : `${API}/lessons`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      console.log('Lessons from DB:', data);
+
+      this.lessons = data.map(l => {
+        const img = l.image || '';
+        const filename = img.replace(/^images[\\/]/, '');
+        const imagePath = filename ? `${API}/images/${filename}` : '';
+
+        return {
+          id: l.id,
+          subject: l.subject || l.topic || l.title || 'Unknown',
+          location: l.location || 'Unknown',
+          price: Number(l.price ?? 0),
+          spaces: Number(l.spaces ?? l.availableInventory ?? 5),
+          rating: Number(l.rating ?? 5),
+          image: imagePath
+        };
+      });
+    })
+    .catch(err => {
+      console.error('Error loading lessons:', err);
+      alert('Could not load lessons from server');
+    });
+},
 
     toggleCart() {
       // If cart is empty → do nothing (button is already disabled)
@@ -371,7 +407,7 @@ new Vue({
         lessons: lessonsForOrder
       };
 
-      return fetch(API + '/collection/orders', {
+      return fetch(API + '/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -395,7 +431,7 @@ new Vue({
         const newSpaces = lesson.spaces - item.qty;
         const lessonId = lesson.id; // numeric id – backend supports this
 
-        fetch(`${API}/collection/lessons/${lessonId}`, {
+        fetch(`${API}/lessons/${lessonId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ spaces: newSpaces })
