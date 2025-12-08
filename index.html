@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>After School Lessons</title>
     
-    <!-- Vue.js -->
+    
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
 
-    <!-- External CSS -->
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +21,7 @@
     </header>
 
     <main>
-        <!-- LESSONS PAGE -->
+        <!-- lesson page-->
         <div v-if="currentPage === 'lessons'">
             <h2>Available Lessons</h2>
 
@@ -103,7 +103,7 @@
             </div>
         </div>
 
-        <!-- CART PAGE -->
+        <!-- cart -->
         <div v-if="currentPage === 'cart'">
             <h2>Your Cart</h2>
 
@@ -140,7 +140,7 @@
             </div>
         </div>
 
-        <!-- CHECKOUT PAGE -->
+        <!-- checkoutt -->
         <div v-if="currentPage === 'checkout'">
             <h2>Checkout</h2>
 
@@ -217,7 +217,7 @@
             </div>
         </div>
 
-        <!-- CONFIRMATION PAGE -->
+        <!-- confrimation -->
         <div v-if="currentPage === 'confirmation'">
             <h2>Thank you! Your Order has been placed.</h2>
 
@@ -255,7 +255,7 @@ new Vue({
     sortAttribute: 'subject',
     sortOrder: 'asc',
     searchTerm: '',
-    lessons: [],          // filled from MongoDB
+    lessons: [],          //from monogodb
     cart: [],
     order: {
       firstName: '',
@@ -307,8 +307,6 @@ new Vue({
     fetchLessons() {
   const trimmed = this.searchTerm.trim();
 
-  // If search box has text → use /search
-  // If empty → use /lessons
   const url = trimmed
     ? `${API}/search?q=${encodeURIComponent(trimmed)}`
     : `${API}/lessons`;
@@ -341,14 +339,14 @@ new Vue({
 },
 
     toggleCart() {
-      // If cart is empty → do nothing (button is already disabled)
+      // If cart is empty do nthg
       if (this.cart.length === 0) return;
 
-      // If currently NOT on cart → go to cart
+      // If currently NOT on cart go to cart
       if (this.currentPage !== 'cart') {
         this.currentPage = 'cart';
       } 
-      // If already on cart → go back to lessons
+      // If already on cart go to lessons
       else {
         this.currentPage = 'lessons';
       }
@@ -386,7 +384,7 @@ new Vue({
       return this.cart.filter(item => item.id === id).length;
     },
 
-    // POST order to backend: /collection/orders
+    // post oderes
     sendOrderToBackend() {
       const lessonsForOrder = this.cartDetails.map(item => {
         const lesson = this.lessons.find(l => l.id === item.id);
@@ -422,14 +420,14 @@ new Vue({
         });
     },
 
-    // PUT: update spaces in backend after order
+    // PUT update spaces in backend after order
     updateSpacesAfterOrder() {
       this.cartDetails.forEach(item => {
         const lesson = this.lessons.find(a => a.id === item.id);
         if (!lesson) return;
 
         const newSpaces = lesson.spaces - item.qty;
-        const lessonId = lesson.id; // numeric id – backend supports this
+        const lessonId = lesson.id; // supports backend
 
         fetch(`${API}/lessons/${lessonId}`, {
           method: 'PUT',
@@ -445,7 +443,7 @@ new Vue({
       });
     },
 
-    // Called when user clicks "Place Order"
+    // Called when placed order
     submitForm() {
       if (!this.isFormValid) return;
 
